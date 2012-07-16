@@ -10,6 +10,8 @@ GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
 
 # Tasks          
-GET     /tasks                  controllers.Application.tasks
-POST    /tasks                  controllers.Application.newTask
-POST    /tasks/:id/delete       controllers.Application.deleteTask(id: Long)
+#GET     /tasks                  controllers.Application.tasks
+#POST    /tasks                  controllers.Application.newTask
+#POST    /tasks/:id/delete       controllers.Application.deleteTask(id: Long)
+POST    /bars                   controllers.Application.addBar
+GET     /bars                   controllers.Application.getBars

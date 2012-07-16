@@ -6,34 +6,50 @@ import play.api.data._
 import play.api.data.Forms._
 
 import models.Task
+import models.{AppDB, Bar}
 
+
+import com.codahale.jerkson.Json
+import play.api.data.Form
+import play.api.data.Forms.{mapping, text, optional}
+
+import org.squeryl.PrimitiveTypeMode._
 
 object Application extends Controller {
+    
   
-  def tasks = Action {
-    Ok(views.html.index(Task.all(), taskForm))
-  }
-
-  val taskForm = Form(
-    "label" -> nonEmptyText
+  val barForm = Form(
+    mapping(
+      "name" -> optional(text)
+    )(Bar.apply)(Bar.unapply)
   )
-
+  
+  
   def index = Action {
-    Redirect(routes.Application.tasks)
+    Ok(views.html.index(barForm))
   }
 
-  def newTask = Action { implicit request =>
-    taskForm.bindFromRequest.fold(
-      errors => BadRequest(views.html.index(Task.all(), errors)),
-      label => {
-        Task.create(label)
-        Redirect(routes.Application.tasks)
-      }
-    )
+  def addBar = Action { implicit request =>
+    barForm.bindFromRequest.value map { bar =>
+      inTransaction(AppDB.barTable insert bar)
+      Redirect(routes.Application.index())
+    } getOrElse BadRequest
   }
   
-  def deleteTask(id: Long) = Action {
-    Task.delete(id)
-    Redirect(routes.Application.tasks)
+  
+  def getBars = Action {
+    val json = inTransaction {
+      val bars = from(AppDB.barTable)(barTable =>
+        select(barTable)
+      )
+      Json.generate(bars)
+    }
+    Ok(json).as(JSON)
   }
+  
+  
+  
+  
+  
+  
 }
