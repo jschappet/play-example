@@ -21,7 +21,7 @@ class ApplicationSpec extends FlatSpec with ShouldMatchers {
   }
 
 
-"A request to the getBars Action" should "respond with data" in {
+  "A request to the getBars Action" should "respond with data" in {
     running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
       inTransaction(AppDB.barTable insert Bar(Some("foo")))
 

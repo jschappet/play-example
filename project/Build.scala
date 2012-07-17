@@ -14,8 +14,10 @@ object ApplicationBuild extends Build {
 		)
 
   val main = PlayProject(appName, appVersion, appDependencies, mainLang = SCALA).settings(
+    lessEntryPoints <<= baseDirectory(_ / "app" / "assets" / "stylesheets" ** "bootstrap.less"),
     organization := "edu.uiowa.icts",
     testOptions in Test := Nil
+
     
     )
 }
