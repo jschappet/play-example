@@ -7,6 +7,11 @@ object ApplicationBuild extends Build {
   val appName = "play-example"
   val appVersion = "0.0.1"
 
+  def customLessEntryPoints(base: File): PathFinder = (
+    (base / "app" / "assets" / "stylesheets" / "bootstrap" * "bootstrap.less") +++
+    (base / "app" / "assets" / "stylesheets" * "*.less")
+  )
+
   val appDependencies: Seq[sbt.ModuleID] = Seq(
   			"org.scalatest" %% "scalatest" % "1.8" % "test",
 			"org.squeryl" %% "squeryl" % "0.9.5-2",
@@ -14,10 +19,12 @@ object ApplicationBuild extends Build {
 		)
 
   val main = PlayProject(appName, appVersion, appDependencies, mainLang = SCALA).settings(
-    lessEntryPoints <<= baseDirectory(_ / "app" / "assets" / "stylesheets" ** "bootstrap.less"),
+    lessEntryPoints <<= baseDirectory(customLessEntryPoints),
     organization := "edu.uiowa.icts",
     testOptions in Test := Nil
 
     
+
     )
+
 }
